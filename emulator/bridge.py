@@ -7,7 +7,7 @@ import logging
 import subprocess
 import time
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Any
 import threading
 
 try:
@@ -202,7 +202,7 @@ class EmulatorBridge:
             self.logger.error(f"Ошибка захвата кадра: {e}", exc_info=True)
             return None
     
-    def _capture_window_frame(self) -> Optional[np.ndarray]:
+    def _capture_window_frame(self) -> Optional[Any]:
         """Захват кадра через окно (альтернативный метод)"""
         if not cv2:
             return None
