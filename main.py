@@ -38,31 +38,31 @@ def initialize_application(splash=None) -> bool:
         
         # Шаг 2: Проверка эмулятора
         if splash:
-            splash.update_progress(2, "Проверка эмулятора...")
+            splash.update_progress(2, "Инициализация моста эмулятора...")
             splash.add_log("Поиск установленного BlueStacks...")
         from emulator.bridge import EmulatorBridge
         emulator_bridge = EmulatorBridge()
         if splash:
-            splash.update_module_status("emulator", "Готов", True)
-            splash.add_log("✓ Эмулятор готов к работе")
+            splash.update_module_status("emulator", "Инициализирован", True)
+            splash.add_log("✓ Мост управления создан; подключение к эмулятору ещё не проверялось")
         
         # Шаг 3: Загрузка модели предиктора (NN-2)
         if splash:
-            splash.update_progress(3, "Загрузка модели предиктора...")
-        from neural_networks.predictor import ActionPredictor
-        predictor = ActionPredictor()
+            splash.update_progress(3, "Инициализация предиктора...")
+        from neural_networks.predictor import Predictor
+        predictor = Predictor()
         if splash:
-            splash.update_module_status("predictor", "Загружено", True)
-            splash.add_log("✓ Модель предиктора (NN-2) загружена")
+            splash.update_module_status("predictor", "Инициализирован", True)
+            splash.add_log("✓ Предиктор инициализирован; файл модели не загружался")
         
         # Шаг 4: Загрузка модели детектора (NN-1)
         if splash:
-            splash.update_progress(4, "Загрузка модели детектора...")
-        from neural_networks.detector import ObjectDetector
-        detector = ObjectDetector()
+            splash.update_progress(4, "Инициализация детектора...")
+        from neural_networks.detector import Detector
+        detector = Detector()
         if splash:
-            splash.update_module_status("detector", "Загружено", True)
-            splash.add_log("✓ Модель детектора (NN-1) загружена")
+            splash.update_module_status("detector", "Инициализирован", True)
+            splash.add_log("✓ Детектор инициализирован; файл модели не загружался")
         
         # Шаг 5: Инициализация классификатора локаций
         if splash:
@@ -76,8 +76,9 @@ def initialize_application(splash=None) -> bool:
         # Шаг 6: Запуск планировщика задач
         if splash:
             splash.update_progress(6, "Запуск планировщика...")
-        from core.scheduler import TaskScheduler
-        scheduler = TaskScheduler()
+        from core.scheduler import Scheduler
+        scheduler = Scheduler()
+        scheduler.start()
         if splash:
             splash.update_module_status("scheduler", "Запущен", True)
             splash.add_log("✓ Планировщик задач запущен")
