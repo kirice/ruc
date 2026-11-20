@@ -174,34 +174,49 @@ class EmulatorBridge:
     
     def capture_frame(self) -> Optional[Any]:
         """
-        Захват кадра из эмулятора
-        
-        Returns:
-            Изображение кадра (BGR) или None при ошибке
+        Захват кадра из эмулятора через бинарный вывод ADB.
+
+        PNG нельзя читать в text-режиме: декодирование stdout как UTF-8
+        повреждает байты изображения.
         """
+        if cv2 is None or np is None:
+            self.logger.warning("OpenCV/NumPy недоступны для обработки кадра")
+            return None
+
         try:
-            # Скриншот через ADB
-            adb_result = self._adb_command("shell screencap -p")
-            
-            if adb_result is None:
-                # Попытка через window capture (Windows)
+            command = [
+                self.adb_path,
+                "-s",
+                f"127.0.0.1:{self.adb_port}",
+                "exec-out",
+                "screencap",
+                "-p",
+            ]
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=False,
+                timeout=10,
+            )
+
+            if result.returncode != 0:
+                error_text = result.stderr.decode("utf-8", errors="replace").strip()
+                self.logger.warning("ADB screenshot failed: %s", error_text)
                 return self._capture_window_frame()
-            
-            if cv2 and np:
-                # Конвертация байтов в изображение
-                nparr = np.frombuffer(adb_result.encode('latin1'), np.uint8)
-                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-                
-                self._last_frame_time = time.time()
-                return frame
-            else:
-                self.logger.warning("OpenCV не доступен для обработки кадра")
-                return None
-                
+
+            encoded = np.frombuffer(result.stdout, dtype=np.uint8)
+            frame = cv2.imdecode(encoded, cv2.IMREAD_COLOR)
+            if frame is None:
+                self.logger.warning("ADB вернул данные, которые не удалось декодировать как изображение")
+                return self._capture_window_frame()
+
+            self._last_frame_time = time.time()
+            return frame
+
         except Exception as e:
             self.logger.error(f"Ошибка захвата кадра: {e}", exc_info=True)
-            return None
-    
+            return self._capture_window_frame()
+
     def _capture_window_frame(self) -> Optional[Any]:
         """Захват кадра через окно (альтернативный метод)"""
         if not cv2:
