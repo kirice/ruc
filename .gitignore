@@ -63,3 +63,20 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Runtime data and trained model weights
+/data/raw/*
+!/data/raw/.gitkeep
+/data/labeled/*
+!/data/labeled/.gitkeep
+/data/rejected/*
+!/data/rejected/.gitkeep
+/data/datasets/*
+!/data/datasets/.gitkeep
+/models/*.onnx
+/models/*.pt
+/models/*.pth
+
+# Local configuration overrides
+config/local.*
+configs/local.*
