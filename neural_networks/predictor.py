@@ -4,6 +4,7 @@ Predictor (NN-2) - Прямой предиктор действий. Stateless-�
 """
 
 import logging
+import time
 from pathlib import Path
 from typing import Optional, Tuple, Dict, Any
 import numpy as np
@@ -109,7 +110,6 @@ class Predictor:
             return None
         
         try:
-            import time
             start_time = time.time()
             
             # Подготовка входа
