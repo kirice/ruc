@@ -127,44 +127,35 @@ def main():
     # Показываем экран загрузки и выполняем инициализацию
     splash = SplashScreen()
     
-    # Запускаем инициализацию в потоке
-    init_success = [True]
-    
+    # Все обновления Tkinter выполняем в главном потоке.
+    init_success = [False]
+
     def run_initialization():
         try:
-            success = initialize_application(splash)
-            init_success[0] = success
-            
-            if success:
-                splash.add_log("✅ Все модули успешно загружены!")
+            init_success[0] = initialize_application(splash)
+            if init_success[0]:
+                splash.add_log("✅ Компоненты приложения инициализированы")
                 splash.update_progress(8, "Готово к запуску")
             else:
                 splash.add_log("❌ Ошибка инициализации", "error")
-                
         except Exception as e:
             init_success[0] = False
             splash.add_log(f"❌ Критическая ошибка: {str(e)}", "error")
         finally:
-            # Закрываем splash screen через небольшую паузу
             splash.root.after(800, splash.close)
-    
-    import threading
-    init_thread = threading.Thread(target=run_initialization, daemon=True)
-    init_thread.start()
-    
-    # Запускаем цикл splash screen
+
+    splash.root.after(100, run_initialization)
     splash.root.mainloop()
-    
-    # Проверяем результат инициализации
+
     if not init_success[0]:
         print("❌ Запуск отменён из-за ошибки инициализации")
         sys.exit(1)
-    
-    # Создаём и запускаем главный интерфейс с инициализированными компонентами
+
+    scheduler = app_components["scheduler"]
     try:
         app = Dashboard(
-            scheduler=app_components['scheduler'],
-            state_machine=app_components['state_machine']
+            scheduler=scheduler,
+            state_machine=app_components["state_machine"],
         )
         app.start()
     except Exception as e:
@@ -172,7 +163,9 @@ def main():
         import traceback
         traceback.print_exc()
         sys.exit(1)
-    
+    finally:
+        scheduler.stop()
+
     print("👋 Game Bot - Завершение работы")
 
 
