@@ -74,9 +74,10 @@ class Dashboard:
         self._running = True
         self.logger.info("Dashboard запущен")
         
-        # Запуск в отдельном потоке если GUI доступен
+        # Tkinter должен работать в главном потоке приложения.
+        # Вызов mainloop здесь также не даёт процессу завершиться раньше окна.
         if TK_AVAILABLE and self.config.get("gui", {}).get("enabled", True):
-            self._start_gui_thread()
+            self._run_gui()
     
     def stop(self):
         """Остановка дашборда"""
