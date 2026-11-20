@@ -1,0 +1,22 @@
+{
+  "bot_id": "default",
+  "name": "Default Bot Profile",
+  "state": "idle",
+  "config_path": "",
+  "map_id": "map1",
+  "created_at": 0,
+  "last_state_change": 0,
+  "metrics": {},
+  "settings": {
+    "action_delay_ms": 100,
+    "confidence_threshold": 0.7,
+    "max_low_confidence_streak": 5,
+    "enable_detector": true,
+    "enable_auto_recovery": true
+  },
+  "console_settings": {
+    "console1_mode": "flood",
+    "console2_mode": "system",
+    "allow_console_override": true
+  }
+}

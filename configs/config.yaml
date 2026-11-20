@@ -1,0 +1,75 @@
+# Основной конфигурационный файл бота
+
+bluestacks:
+  # Путь к установке BlueStacks
+  install_path: "C:\\Program Files\\BlueStacks_nxt"
+  # Порт ADB подключения
+  adb_port: 5555
+  # Разрешение экрана эмулятора
+  resolution:
+    width: 1920
+    height: 1080
+  # Выделяемая память (MB)
+  memory: 4096
+  # Количество ядер CPU
+  cpu_cores: 4
+  # Включить Root-права
+  enable_root: true
+
+bot:
+  # Задержка между действиями (мс)
+  action_delay: 100
+  # Задержка перед атакой (мс)
+  attack_delay: 200
+  # Чувствительность обнаружения мобов (0.0-1.0)
+  detection_threshold: 0.6
+  # Максимальное расстояние до моба для атаки (пиксели)
+  max_attack_distance: 300
+  # Режим работы: "auto", "manual", "farm"
+  mode: "auto"
+  # Выбор оружия/навыков
+  weapon_slot: 1
+  skills:
+    - 1
+    - 2
+    - 3
+
+training:
+  # Размер изображения для обучения
+  image_size: 640
+  # Количество эпох обучения
+  epochs: 100
+  # Размер батча
+  batch_size: 16
+  # Процент данных для валидации
+  val_split: 0.2
+  # Устройство для обучения: "cpu", "cuda", "mps"
+  device: "cuda"
+
+screenshotter:
+  # Интервал между скриншотами (секунды)
+  interval: 2.0
+  # Папка для сохранения сырых скриншотов
+  raw_folder: "data/raw"
+  # Папка для размеченных изображений
+  labeled_folder: "data/labeled"
+  # Папка для брака
+  rejected_folder: "data/rejected"
+
+gui:
+  # Тема интерфейса: "light", "dark"
+  theme: "dark"
+  # Язык: "ru", "en"
+  language: "ru"
+  # Показывать FPS
+  show_fps: true
+  # Автосохранение логов
+  auto_save_logs: true
+
+paths:
+  # Путь к модели ONNX
+  model_path: "models/model.onnx"
+  # Путь к конфигурации
+  config_path: "configs/config.yaml"
+  # Путь к логам
+  logs_path: "logs/bot.log"
