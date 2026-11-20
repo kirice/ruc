@@ -44,6 +44,24 @@ def initialize_application(splash=None) -> bool:
             splash.add_log("Загрузка конфигурации...")
         from core.state_machine import StateMachine
         state_machine = StateMachine()
+
+        # Загружаем сохранённый профиль по умолчанию, чтобы список ботов
+        # в панели не оставался пустым. Сам бот при этом не запускается.
+        default_profile_path = Path("config/bots/profile_default.json")
+        if default_profile_path.is_file():
+            if state_machine.load_profile("default", str(default_profile_path)):
+                logging.getLogger("main").info(
+                    "Профиль по умолчанию загружен: %s", default_profile_path
+                )
+            else:
+                logging.getLogger("main").warning(
+                    "Не удалось загрузить профиль: %s", default_profile_path
+                )
+        else:
+            logging.getLogger("main").warning(
+                "Профиль по умолчанию не найден: %s", default_profile_path
+            )
+
         if splash:
             splash.update_module_status("core_init", "Загружено", True)
             splash.add_log("✓ Ядро системы инициализировано")
