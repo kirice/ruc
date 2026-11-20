@@ -5,6 +5,7 @@ Game Bot - Main Application Entry Point
 Включает экран начальной загрузки перед основным интерфейсом.
 """
 
+import logging
 import sys
 from pathlib import Path
 
@@ -26,6 +27,17 @@ def initialize_application(splash=None) -> bool:
         True если инициализация успешна, False иначе
     """
     try:
+        log_path = Path("logs/bot.log")
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[
+                logging.StreamHandler(),
+                logging.FileHandler(log_path, encoding="utf-8"),
+            ],
+        )
+
         # Шаг 1: Инициализация ядра
         if splash:
             splash.update_progress(1, "Инициализация ядра...")
